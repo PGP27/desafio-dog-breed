@@ -4,7 +4,6 @@ import AppRoutes from './app.routes';
 
 const Router = () => {
   const { token } = useAuth();
-  console.log(token);
 
   return token ? <AppRoutes /> : <AuthRoutes />;
 };

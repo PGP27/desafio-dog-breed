@@ -4,7 +4,6 @@ import { useAuth } from '~/contexts/AuthContext';
 const Register = () => {
   const { login } = useAuth();
   const emailRef = useRef<any>();
-  console.log(emailRef);
 
   return (
     <div>
