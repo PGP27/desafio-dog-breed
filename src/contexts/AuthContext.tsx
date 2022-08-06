@@ -1,11 +1,13 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from 'react';
 import { api } from '~/services/index.service';
 
 interface AuthContextProps {
-  loading: boolean;
+  loadingLogin: boolean;
   token: string;
   email: string;
   login(email: string): Promise<void>;
+  erro: boolean;
+  setErro: Dispatch<SetStateAction<boolean>>;
 }
 
 interface AuthProviderProps {
@@ -15,24 +17,30 @@ interface AuthProviderProps {
 const AuthContext = createContext({} as AuthContextProps);
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingLogin, setLoadingLogin] = useState<boolean>(false);
   const [token, setToken] = useState<string>(localStorage.getItem('token') || '');
   const [email, setEmail] = useState<string>('');
+  const [erro, setErro] = useState<boolean>(false);
 
   const login = async (email: string) => {
-    setLoading(true);
+    setLoadingLogin(true);
     await api
       .post('/register', { email })
       .then((res) => {
         setEmail(email);
         setToken(res.data.user.token);
         localStorage.setItem('token', res.data.user.token);
+        localStorage.setItem('email', email);
       })
-      .catch((err) => {});
-    setLoading(false);
+      .catch(() => setErro(true));
+    setLoadingLogin(false);
   };
 
-  return <AuthContext.Provider value={{ loading, token, email, login }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ loadingLogin, token, email, login, erro, setErro }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 const useAuth = () => useContext(AuthContext);
