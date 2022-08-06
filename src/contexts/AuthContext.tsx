@@ -4,7 +4,6 @@ import { api } from '~/services/index.service';
 interface AuthContextProps {
   loadingLogin: boolean;
   token: string;
-  email: string;
   login(email: string): Promise<void>;
   erro: boolean;
   setErro: Dispatch<SetStateAction<boolean>>;
@@ -19,7 +18,6 @@ const AuthContext = createContext({} as AuthContextProps);
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loadingLogin, setLoadingLogin] = useState<boolean>(false);
   const [token, setToken] = useState<string>(localStorage.getItem('token') || '');
-  const [email, setEmail] = useState<string>('');
   const [erro, setErro] = useState<boolean>(false);
 
   const login = async (email: string) => {
@@ -27,17 +25,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     await api
       .post('/register', { email })
       .then((res) => {
-        setEmail(email);
         setToken(res.data.user.token);
         localStorage.setItem('token', res.data.user.token);
-        localStorage.setItem('email', email);
       })
       .catch(() => setErro(true));
     setLoadingLogin(false);
   };
 
   return (
-    <AuthContext.Provider value={{ loadingLogin, token, email, login, erro, setErro }}>
+    <AuthContext.Provider value={{ loadingLogin, token, login, erro, setErro }}>
       {children}
     </AuthContext.Provider>
   );

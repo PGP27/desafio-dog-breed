@@ -4,6 +4,7 @@ import { PawPrint } from 'phosphor-react';
 import dogLogin from '~/assets/dog-login.png';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Logo from '~/components/Logo';
 
 const Register = () => {
   const { login, loadingLogin, erro, setErro } = useAuth();
@@ -29,10 +30,7 @@ const Register = () => {
       </div>
       <div className='h-full lg:flex-1 flex flex-col justify-center'>
         <div className='flex flex-col max-w-[400px]'>
-          <div className='flex items-center'>
-            <h1 className='text-4xl'>Dog Breed</h1>
-            <PawPrint fontSize={36} className='ml-2' />
-          </div>
+        <Logo />
           <p className='mt-4 text-gray-600'>Insira seu email para entrar</p>
           <div className='flex flex-col my-12'>
             <label htmlFor='input-email' className='mb-2'>
