@@ -15,8 +15,20 @@ const List = () => {
   const [breed, setBreed] = useState<string>('chihuahua');
   const [dogsList, setDogsList] = useState<string[]>([]);
   const [loadingList, setLoadingList] = useState<boolean>(false);
-  const [maxPhotos, setMaxPhotos] = useState<number>(20);
+  const [maxPhotos, setMaxPhotos] = useState<number>(30);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [showBigImage, setShowBigImage] = useState<string>('');
+  const [scrollPosition, setScrollPosition] = useState<number>(0);
+  
+  const logout = () => {
+    localStorage.clear();
+    document.location.reload();
+  };
+
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    setScrollPosition(position);
+  };
 
   const maxPages = useMemo(() => {
     const max = Math.ceil(dogsList.length / maxPhotos);
@@ -37,6 +49,18 @@ const List = () => {
     return [];
   }, [maxPages]);
 
+  const middlePx = useMemo(() => {
+    return (window.innerHeight / 2) + scrollPosition - 241;
+  }, [scrollPosition]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   useEffect(() => {
     const getDogsList = async () => {
       setLoadingList(true);
@@ -48,22 +72,10 @@ const List = () => {
     getDogsList();
   }, [breed, token]);
 
-  useEffect(() => {
-    console.log(currentPage);
-    console.log(maxPhotos);
-    console.log(maxPages);
-    
-  }, [maxPhotos, currentPage, maxPages]);
-
-  const logout = () => {
-    localStorage.clear();
-    document.location.reload();
-  };
-
   if (loadingList) return <LoadingScreen />;
 
   return (
-    <div className='h-full w-full flex flex-col items-center'>
+    <div className='relative h-full w-full flex flex-col items-center'>
       <header className='w-full flex justify-between border-b shadow-sm py-1 p-2'>
         <Logo sm />
         <button
@@ -83,25 +95,41 @@ const List = () => {
               title='Chihuahua'
               image={chihuahua}
               text='O Chihuahua é uma das menores raças de cães do mundo. Seu nome vem da região de Chihuahua, no México.'
-              onClick={() => setBreed('chihuahua')}
+              onClick={() => {
+                setBreed('chihuahua');
+                setCurrentPage(1);
+              }}
+              selected={breed === 'chihuahua'}
             />
             <DogCard
               title='Husky'
               image={husky}
               text='O Husky Siberiano é uma raça de cães de trenó de tamanho médio. Surgiram no nordeste da Ásia.'
-              onClick={() => setBreed('husky')}
+              onClick={() => {
+                setBreed('husky');
+                setCurrentPage(1);
+              }}
+              selected={breed === 'husky'}
             />
             <DogCard
               title='Labrador'
               image={labrador}
               text='O Labrador é uma raça britânica de cão de caça retriever. Está entre os cães mais presentes em diversos países.'
-              onClick={() => setBreed('labrador')}
+              onClick={() => {
+                setBreed('labrador');
+                setCurrentPage(1);
+              }}
+              selected={breed === 'labrador'}
             />
             <DogCard
               title='Pug'
               image={pug}
               text='O pug é uma raça de cachorro originária da China. Pugs são conhecidos por serem cães companheiros, sociáveis e gentis.'
-              onClick={() => setBreed('pug')}
+              onClick={() => {
+                setBreed('pug');
+                setCurrentPage(1);
+              }}
+              selected={breed === 'pug'}
             />
           </div>
         </div>
@@ -113,16 +141,20 @@ const List = () => {
               onChange={({ target: { value } }) => setMaxPhotos(Number(value))}
               className='outline-none ml-2'
             >
-              <option value={20}>20</option>
               <option value={30}>30</option>
               <option value={40}>40</option>
+              <option value={50}>50</option>
             </select>
           </div>
           <div className='w-full grid justify-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
             {dogsList.slice((maxPhotos*currentPage) - maxPhotos , maxPhotos*currentPage).map((image: string, index: number) => {
               return (
-                <button key={index} className='w-fit bg-neutral-100 p-4 pb-12 border rounded transition hover:bg-neutral-200'>
-                  <img src={image} alt='Dog' className='h-40 w-40 border m-0' />
+                <button
+                  key={index}
+                  className='w-fit bg-neutral-100 p-3 pb-8 border rounded transition hover:bg-neutral-200'
+                  onClick={() => setShowBigImage(image)}
+                >
+                  <img src={image} alt='Dog' className='h-40 w-40 border' />
                 </button>
               );
             })}
@@ -134,7 +166,7 @@ const List = () => {
                   key={page}
                   type='button'
                   onClick={() => setCurrentPage(page)}
-                  className='p-2 text-sm hover:bg-neutral-200 hover:shadow-sm'
+                  className={`p-2 text-sm hover:bg-neutral-200 hover:shadow-sm ${currentPage === page && 'border-2 border-blue-700'}`}
                 >
                   {page}
                 </button>
@@ -143,6 +175,19 @@ const List = () => {
           </div>
         </div>
       </div>
+      {showBigImage && (
+        <div
+          onClick={() => setShowBigImage('')}
+          className='absolute h-full w-full bg-black/30 backdrop-blur-md z-50'
+        >
+          <div
+            style={{ top: `${middlePx}px` }}
+            className='fixed left-1/2 -translate-x-1/2 w-fit bg-neutral-100 p-4 pb-20 border rounded'
+          >
+            <img src={showBigImage} alt='Dog' className='h-96 w-96 border' />
+          </div>
+      </div>
+      )}
     </div>
   );
 };
