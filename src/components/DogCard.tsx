@@ -1,20 +1,15 @@
 import React from 'react';
 
-interface DogCardProps {
-  title: string;
-  image: string;
-  text: string;
-  selected?: boolean;
-}
+import { DogCardModel } from '~/models';
 
-type DogCardModel = DogCardProps & JSX.IntrinsicElements['button'];
-
-const DogCard: React.FC<DogCardModel> = ({ title, image, text, selected, ...rest }: DogCardProps) => {
+const DogCard: React.FC<DogCardModel> = ({ title, image, text, selected, ...rest }) => {
   return (
     <button
       {...rest}
       type='button'
-      className={`h-44 w-44 flex flex-col items-end justify-center group ${selected && 'border-4 border-blue-700'}`}
+      className={`h-44 w-44 flex flex-col items-end justify-center group ${
+        selected && 'border-4 border-blue-700'
+      }`}
     >
       <div className='relative h-full w-full'>
         <div className='absolute h-full w-full z-10 p-4 flex items-center transition group-hover:backdrop-blur-lg bg-white/10'>

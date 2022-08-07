@@ -1,21 +1,10 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import { AuthContextProps, AuthProviderProps } from '~/models';
 import { api } from '~/services/index.service';
-
-interface AuthContextProps {
-  loadingLogin: boolean;
-  token: string;
-  login(email: string): Promise<void>;
-  erro: boolean;
-  setErro: Dispatch<SetStateAction<boolean>>;
-}
-
-interface AuthProviderProps {
-  children: ReactNode;
-}
 
 const AuthContext = createContext({} as AuthContextProps);
 
-const AuthProvider = ({ children }: AuthProviderProps) => {
+const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loadingLogin, setLoadingLogin] = useState<boolean>(false);
   const [token, setToken] = useState<string>(localStorage.getItem('token') || '');
   const [erro, setErro] = useState<boolean>(false);
