@@ -1,9 +1,13 @@
 import { useEffect, useRef } from 'react';
+
 import { useAuth } from '~/contexts/AuthContext';
-import dogLogin from '~/assets/dog-login.png';
+
+import Logo from '~/components/Logo';
+
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Logo from '~/components/Logo';
+
+import dogLogin from '~/assets/dog-login.png';
 
 const Register = () => {
   const { login, loadingLogin, erro, setErro } = useAuth();
