@@ -23,7 +23,7 @@ Bibliotecas utilizadas:
 * react-toastify
 * tailwindcss
 
-[`Demonstração online`](https://desafio-dog-breed-ten.vercel.app/) disponível!
+[`Demonstração online`](https://desafio-dog-breed-pgp27.vercel.app/) disponível!
 
 ## Rodando o projeto
 
